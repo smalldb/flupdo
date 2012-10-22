@@ -46,9 +46,15 @@ interface IBackend
 
 
 	/**
-	 * Get all known types.
+	 * Get all known state machine types.
 	 */
 	function get_known_types();
+
+
+	/**
+	 * Describe properties of specified state machine type.
+	 */
+	function describe($type);
 
 }
 
