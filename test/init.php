@@ -28,53 +28,15 @@
  * SUCH DAMAGE.
  */
 
-namespace Flupdo;
+spl_autoload_register(function($class) {
+	$dir = dirname(__FILE__).'/../class/';
+	$lc_class = strtolower($class);
+        @ list($head, $tail) = explode("\\", $lc_class, 2);
 
-/**
- * Simple testing backend which uses plain array to store all data. It loads 
- * state machine definitions from json files in specified directory.
- */
-class ArrayBackend extends AbstractBackend
-{
-	private $known_types = array(
-	//	'foo' => array(
-	//		'name' => 'Foo',
-	//		'src'  => 'example/foo.json',
-	//	),
-	);
-
-
-	/**
-	 * Register new state machine type.
-	 */
-	public function addType($type, $name, $machine_definition)
-	{
-		$this->known_types[$type] = array(
-			'name' => $name,
-			'machine_def' => $machine_definition,
-		);
+	if ($head == 'smalldb') {
+		require($dir.str_replace('\\', '/', $tail).'.php');
 	}
+});
 
 
-	public function getKnownTypes()
-	{
-		return array_keys($this->known_types);
-	}
-
-
-	public function describeType($type)
-	{
-		return $this->known_types[$type];
-	}
-
-
-	public function createMachine($type)
-	{
-		if (array_key_exists($type, $this->known_types)) {
-			$machine_def = $this->known_types[$type]['machine_def'];
-			return new ArrayMachine($this, $type, $machine_def);
-		}
-	}
-
-}
 

@@ -50,7 +50,7 @@ class Reference
 	/**
 	 * Create reference and initialize it with given primary key or other reference.
 	 */
-	public function __construct($machine, $ref)
+	public function __construct($machine, $ref = null)
 	{
 		$this->machine = $machine;
 
@@ -68,10 +68,16 @@ class Reference
 	public function __get($key)
 	{
 		switch ($key) {
+			case 'ref':
+				return $this->ref;
+			case 'machine':
+				return $this->machine;
 			case 'state':
 				return $this->machine->getState($this->ref);
 			case 'properties':
 				return $this->machine->getProperties($this->ref);
+			case 'actions':
+				return $this->machine->getAvailableTransitions($this->ref);
 		}
 	}
 
@@ -81,7 +87,7 @@ class Reference
 	 */
 	public function __call($name, $arguments)
 	{
-		$this->machine->invokeTransition($this->ref, $name, $arguments);
+		return $this->machine->invokeTransition($this->ref, $name, $arguments);
 	}
 
 	// todo: what about array_map, reduce, walk, ... ?
