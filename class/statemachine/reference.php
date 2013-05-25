@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2013, Josef Kufner  <jk@frozen-doe.net>
+ * Copyright (c) 2012, Josef Kufner  <jk@frozen-doe.net>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,85 +28,68 @@
  * SUCH DAMAGE.
  */
 
-namespace Flupdo;
+namespace Flupdo\StateMachine;
 
 /**
- * Simple testing machine implementation. Uses array to store all data.
+ * Reference to one or more state machines. Allows you to invoke transitions in 
+ * the easy way by calling methods on this reference object. This is syntactic 
+ * sugar only, nothing really happen here.
+ *
+ * Method call on this class invokes the transition.
+ *
+ * Read-only properties:
+ *   - state = $machine->getState($ref);
+ *   - properties = $machine->getProperties($ref);
  */
-class ArrayMachine extends AbstractMachine
+class Reference 
 {
-	private $machine_definition;
-
-	// Data storage for all state machines
-	protected $properties = array();
+	protected $ref;
+	protected $machine;
 
 
 	/**
-	 * Define state machine using $machine_definition.
+	 * Create reference and initialize it with given primary key or other reference.
 	 */
-	public function initializeMachine($args)
+	public function __construct($machine, $ref)
 	{
-		$this->states  = $args['states'];
-		$this->actions = $args['actions'];
-	}
+		$this->machine = $machine;
 
-
-	/**
-	 * Returns true if user has required permissions.
-	 */
-	protected function checkPermissions($permissions, $ref)
-	{
-		return true;
-	}
-
-
-	/**
-	 * Get current state of state machine.
-	 */
-	public function getState($ref)
-	{
-		if ($ref === null) {
-			return '';
+		if ($ref instanceof self) {
+			$this->ref = $ref->ref;
 		} else {
-			return @ $this->properties[$ref]['state'];
+			$this->ref = $ref;
 		}
 	}
 
 
 	/**
-	 * Get all properties of state machine, including it's state.
+	 * Get data from machine
 	 */
-	public function getProperties($ref)
+	public function __get($key)
 	{
-		return @ $this->properties[$ref];
+		switch ($key) {
+			case 'ref':
+				return $this->ref;
+			case 'machine':
+				return $this->machine;
+			case 'state':
+				return $this->machine->getState($this->ref);
+			case 'properties':
+				return $this->machine->getProperties($this->ref);
+			case 'actions':
+				return $this->machine->getAvailableTransitions($this->ref);
+		}
 	}
 
 
 	/**
-	 * Fake method for all transitions
+	 * Function call is transition invocation. Just forward it to backend.
 	 */
-	public function __call($method, $args)
+	public function __call($name, $arguments)
 	{
-		$ref = $args[0];
-		$state = $this->getState($ref);
-
-		echo "Transition invoked: ", var_export($state), " (ref = ", var_export($ref), ") -> ",
-			get_class($this), "::", $method, "(", join(', ', array_map('var_export', $args)), ")";
-
-		$expected_states = $this->actions[$method]['transitions'][$state]['targets'];
-
-		// create new machine
-		if ($ref === null) {
-			$ref = count($this->properties);
-			echo " [new]";
-		}
-
-		$this->properties[$ref]['state'] = $expected_states[0];
-
-		$new_state = $this->getState($ref);
-		echo " -> ", var_export($new_state), " (ref = ", var_export($ref), ").\n";
-
-		return $ref;
+		return $this->machine->invokeTransition($this->ref, $name, $arguments);
 	}
+
+	// todo: what about array_map, reduce, walk, ... ?
 }
 

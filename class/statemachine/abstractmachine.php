@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  */
 
-namespace Flupdo;
+namespace Flupdo\StateMachine;
 
 /**
  * Implementation of the state machine. One instance of this class represents 

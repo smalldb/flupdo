@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  */
 
-namespace Flupdo;
+namespace Flupdo\StateMachine;
 
 /**
  * Simple and stupid backend which must be told about everything. Good enough 

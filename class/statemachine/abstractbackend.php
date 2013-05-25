@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  */
 
-namespace Flupdo;
+namespace Flupdo\StateMachine;
 
 /**
  * Container and factory of all state machines. It creates state machines when
