@@ -44,7 +44,7 @@ namespace Flupdo\Flupdo;
  * REPLACE [LOW_PRIORITY | DELAYED]
  *  [INTO] tbl_name
  *  SET col_name={expr | DEFAULT}, ...
- * 
+ *
  * -- OR --
  *
  * REPLACE [LOW_PRIORITY | DELAYED]

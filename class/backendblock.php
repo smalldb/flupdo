@@ -43,7 +43,7 @@ class BackendBlock extends \Block
 
 
 	/**
-	 * Setup block to act as expected. Configuration is done by Flupdo 
+	 * Setup block to act as expected. Configuration is done by Flupdo
 	 * Block Storage.
 	 */
 	public function __construct($smalldb)

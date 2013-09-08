@@ -31,7 +31,7 @@
 namespace Flupdo;
 
 /**
- * Dibi Flupdo backend expects dibi library initialized and global static 
+ * Dibi Flupdo backend expects dibi library initialized and global static
  * class dibi working.
  */
 class DibiBackend extends AbstractBackend
