@@ -51,6 +51,15 @@ class BlockStorage implements \IBlockStorage
 
 
 	/**
+	 * Get Flupdo backend
+	 */
+	public function getFlupdoBackend()
+	{
+		return $this->backend;
+	}
+
+
+	/**
 	 * Returns true if there is no way that this storage can modify or
 	 * create blocks. When creating or modifying block, first storage that
 	 * returns true will be used.
