@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2013, Josef Kufner  <jk@frozen-doe.net>
+ * Copyright (c) 2012, Josef Kufner  <jk@frozen-doe.net>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,39 +28,20 @@
  * SUCH DAMAGE.
  */
 
-namespace Flupdo\Flupdo;
+namespace Flupdo\Cascade;
 
-/**
- * Extend PDO class with query builder starting methods. These methods are
- * simple factory & proxy to FlupdoBuilder.
- */
-class Flupdo extends \PDO
+abstract class BackendBlock extends \Block
 {
 
+	protected $smalldb;
+
 	/**
-	 * Returns fresh instance of Flupdo query builder.
+	 * Setup block to act as expected. Configuration is done by Flupdo
+	 * Block Storage.
 	 */
-	function __call($method, $args)
+	public function __construct($smalldb)
 	{
-		$class = __NAMESPACE__.'\\'.ucfirst($method).'Builder';
-		if (!class_exists($class)) {
-			throw new \BadMethodCallException('Undefined method "'.$method.'".');
-		}
-		$builder = new $class($this);
-		if (!empty($args)) {
-			$builder->__call($method, $args);
-		}
-		return $builder;
-	}
-
-
-	public function quoteIdent($ident)
-	{
-		if (is_array($ident)) {
-			return array_map(function($ident) { return str_replace("`", "``", $ident); }, $ident);
-		} else {
-			return str_replace("`", "``", $ident);
-		}
+		$this->smalldb = $smalldb;
 	}
 
 }

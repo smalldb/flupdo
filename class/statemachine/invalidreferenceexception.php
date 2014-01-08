@@ -28,40 +28,13 @@
  * SUCH DAMAGE.
  */
 
-namespace Flupdo\Flupdo;
+namespace Flupdo\StateMachine;
 
 /**
- * Extend PDO class with query builder starting methods. These methods are
- * simple factory & proxy to FlupdoBuilder.
+ * Invalid reference requested
  */
-class Flupdo extends \PDO
+class InvalidReferenceException extends \InvalidArgumentException
 {
-
-	/**
-	 * Returns fresh instance of Flupdo query builder.
-	 */
-	function __call($method, $args)
-	{
-		$class = __NAMESPACE__.'\\'.ucfirst($method).'Builder';
-		if (!class_exists($class)) {
-			throw new \BadMethodCallException('Undefined method "'.$method.'".');
-		}
-		$builder = new $class($this);
-		if (!empty($args)) {
-			$builder->__call($method, $args);
-		}
-		return $builder;
-	}
-
-
-	public function quoteIdent($ident)
-	{
-		if (is_array($ident)) {
-			return array_map(function($ident) { return str_replace("`", "``", $ident); }, $ident);
-		} else {
-			return str_replace("`", "``", $ident);
-		}
-	}
-
+	// Just simple exception in Flupdo namespace, so it is clear who threw it.
 }
 
