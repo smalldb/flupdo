@@ -34,7 +34,7 @@ use	\Flupdo\Flupdo\Flupdo,
 	\Flupdo\Flupdo\FlupdoProxy;
 
 /**
- * SmallDB Backend which provides database via Flupdo.
+ * Flupdo Backend which provides database via Flupdo.
  *
  * TODO: Make this dumb and provide it from somewhere else.
  */
@@ -120,6 +120,22 @@ class FlupdoBackend extends AbstractBackend
 		}
 
 		$this->machine_type_table = $machine_types;
+	}
+
+
+	/**
+	 * Creates a listing using given filters.
+	 */
+	public function createListing($filters)
+	{
+		$type = $filters['type'];
+		$machine = $this->getMachine($type);
+
+		$listing = new \Flupdo\StateMachine\FlupdoGenericListing($this->flupdo);
+		$machine->queryAddStateSelect($listing);
+		$machine->queryAddPropertiesSelect($listing);
+
+		return $listing;
 	}
 
 
