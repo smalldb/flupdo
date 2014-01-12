@@ -35,7 +35,7 @@ namespace Flupdo\StateMachine;
  */
 class FlupdoGenericListing
 	extends \Flupdo\Flupdo\SelectBuilder
-	implements IListing
+	//implements IListing
 {
 	// TODO
 }
