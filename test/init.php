@@ -16,16 +16,6 @@
  *
  */
 
-spl_autoload_register(function($class) {
-	$dir = dirname(__FILE__).'/../class/';
-	$lc_class = strtolower($class);
-        @ list($head, $tail) = explode("\\", $lc_class, 2);
-
-	if ($head == 'smalldb') {
-		include($dir.str_replace('\\', '/', $tail).'.php');
-	}
-});
-
 
 /**
  * Print SQL result in a nice table
