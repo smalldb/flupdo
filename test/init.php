@@ -16,6 +16,7 @@
  *
  */
 
+require dirname(__FILE__).'/../vendor/autoload.php';
 
 /**
  * Print SQL result in a nice table
