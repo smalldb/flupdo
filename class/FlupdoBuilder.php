@@ -190,7 +190,11 @@ abstract class FlupdoBuilder
 	public final function compile()
 	{
 		try {
-			return $this->compileQuery();
+			$q = $this->compileQuery();
+			if (function_exists('debug_msg')) {
+				debug_msg("SQL Query:\n%s", $this->query_sql);
+			}
+			return $q;
 		}
 		catch (\Exception $ex) {
 			// Make sure unfinished query will not make it to the output.
@@ -309,7 +313,6 @@ abstract class FlupdoBuilder
 			$this->compile();
 		}
 
-		if (function_exists('debug_msg')) debug_msg("SQL Query:\n%s", $this->query_sql);
 		if (empty($this->query_params)) {
 			$t = microtime(true);
 			$result = $this->pdo->query($this->query_sql);
