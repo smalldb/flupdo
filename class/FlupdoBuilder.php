@@ -205,6 +205,19 @@ abstract class FlupdoBuilder
 
 
 	/**
+	 * "Uncompile" the query. This will drop compiled query and allow
+	 * additional modifications. Once query is compiled additional
+	 * modifications are not allowed to detect programming errors, but
+	 * sometimes it is useful to execute the query and then perform
+	 * additional modifications before second execution.
+	 */
+	public function uncompile()
+	{
+		$this->query_sql = null;
+	}
+
+
+	/**
 	 * Fluently dump query to error log.
 	 */
 	public function debugDump()
