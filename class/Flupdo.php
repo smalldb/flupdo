@@ -77,21 +77,37 @@ class Flupdo extends \PDO
 	 */
 	public static function createInstanceFromConfig($config)
 	{
+		$driver   = isset($config['driver'])   ? $config['driver']   : null;
+		$host     = isset($config['host'])     ? $config['host']     : null;
+		$database = isset($config['database']) ? $config['database'] : null;
+		$username = isset($config['username']) ? $config['username'] : null;
+		$password = isset($config['password']) ? $config['password'] : null;
+
 		if (isset($config['dsn'])) {
-			return new self($config['dsn'], $config['username'], $config['password'], array(
+			return new self($config['dsn'], $username, $password, array(
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
-		} else if ($config['driver'] == 'mysql') {
-			return new self('mysql:dbname='.$config['database'].';host='.$config['host'].';charset=UTF8',
-				$config['username'], $config['password'],
+		} else if ($driver == 'mysql') {
+			return new self("mysql:dbname=$database;host=$host;charset=UTF8",
+				$username, $password,
 				array(
 					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'; SET time_zone = \''.date_default_timezone_get().'\';'
 						.(!empty($config['disable_cache']) ? 'SET SESSION query_cache_type = OFF;' : null),
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
+		} else if ($driver == 'sqlite') {
+			return new self("sqlite:$database",
+				null, null, array(
+					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
+				));
+		} else if ($host !== null) {
+			return new self("$driver:dbname=$database;host=$host;charset=UTF8",
+				$username, $password, array(
+					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
+				));
 		} else {
-			return new self($config['driver'].':dbname='.$config['database'].';host='.$config['host'].';charset=UTF8',
-				$config['username'], $config['password'], array(
+			return new self("$driver:dbname=$database;charset=UTF8",
+				$username, $password, array(
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
 		}
