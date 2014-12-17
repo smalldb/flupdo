@@ -95,6 +95,14 @@ class Flupdo extends \PDO
 						.(!empty($config['disable_cache']) ? 'SET SESSION query_cache_type = OFF;' : null),
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
+		} else if ($driver == 'sphinx') {
+			return new self("mysql:dbname=$database;host=$host;charset=UTF8",
+				$username, $password,
+				array(
+					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'; SET time_zone = \''.date_default_timezone_get().'\';'
+						.(!empty($config['disable_cache']) ? 'SET SESSION query_cache_type = OFF;' : null),
+					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
+				));
 		} else if ($driver == 'sqlite') {
 			return new self("sqlite:$database",
 				null, null, array(
