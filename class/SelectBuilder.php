@@ -57,6 +57,9 @@ class SelectBuilder extends FlupdoBuilder
 		'headerComment'		=> array('replace',	'-- HEADER'),
 		'select'		=> array('add',		'SELECT'),
 
+		// Simple trick to prepend a column
+		'selectFirst'		=> array('add',		'SELECT_FIRST'),
+
 		// Flags
 		'all'			=> array('setFlag',	'DISTINCT',		'ALL'),
 		'distinct'		=> array('setFlag',	'DISTINCT',		'DISTINCT'),
@@ -124,7 +127,12 @@ class SelectBuilder extends FlupdoBuilder
 				'SQL_CACHE',
 				'SQL_CALC_FOUND_ROWS'
 			), self::INDENT | self::LABEL);
-		$this->sqlList('SELECT', self::EOL);
+		if (isset($this->buffers['SELECT_FIRST'])) {
+			$this->sqlList('SELECT_FIRST', self::COMMA | self::EOL);
+			$this->sqlList('SELECT', self::SUB_INDENT | self::EOL);
+		} else {
+			$this->sqlList('SELECT', self::EOL);
+		}
 		$this->sqlList('FROM', self::INDENT | self::LABEL | self::EOL);
 		$this->sqlJoins('JOIN');
 		$this->sqlConditions('WHERE');

@@ -73,6 +73,8 @@ abstract class FlupdoBuilder
 	const INDENT		= 0x01;	///< List items should be indented.
 	const LABEL		= 0x02;	///< SQL fragment has a label.
 	const BRACKETS		= 0x04;	///< There are brackets around each item in the list.
+	const SUB_INDENT	= 0x20;	///< Indent more the first line.
+	const COMMA		= 0x40;	///< Add comma after the SQL fragment.
 	const EOL		= 0x80;	///< Add EOL after the SQL fragment.
 	const ALL_DECORATIONS	= 0xFF;	///< Make it fancy!
 	/** @} */
@@ -573,6 +575,9 @@ abstract class FlupdoBuilder
 			}
 		}
 
+		if ($decorations & self::COMMA) {
+			echo ",";
+		}
 		if ($decorations & self::EOL) {
 			echo "\n";
 		}
@@ -587,8 +592,8 @@ abstract class FlupdoBuilder
 		$first = true;
 
 		if (isset($this->buffers[$buffer_id])) {
-			if ($decorations & self::INDENT) {
-				if ($decorations & self::BRACKETS) {
+			if ($decorations & (self::INDENT | self::SUB_INDENT)) {
+				if ($decorations & (self::BRACKETS | self::SUB_INDENT)) {
 					echo $this->sub_indent;
 				} else {
 					echo $this->indent;
@@ -621,6 +626,9 @@ abstract class FlupdoBuilder
 			}
 			if ($decorations & self::BRACKETS) {
 				echo ')';
+			}
+			if ($decorations & self::COMMA) {
+				echo ",";
 			}
 			if ($decorations & self::EOL) {
 				echo "\n";
