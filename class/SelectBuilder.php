@@ -48,6 +48,11 @@ namespace Flupdo\Flupdo;
  */
 class SelectBuilder extends FlupdoBuilder
 {
+	/**
+	 * @copydoc FlupdoBuilder\$can_explain
+	 */
+	protected $can_explain = true;
+
 
 	/**
 	 * @copydoc FlupdoBuilder\$methods

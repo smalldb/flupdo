@@ -51,7 +51,6 @@ namespace Flupdo\Flupdo;
 
 class InsertBuilder extends FlupdoBuilder
 {
-
 	/**
 	 * @copydoc FlupdoBuilder\$methods
 	 */

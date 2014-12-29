@@ -39,6 +39,11 @@ abstract class FlupdoBuilder
 	protected $log_explain;
 
 	/**
+	 * Is it possible to explain this query?
+	 */
+	protected $can_explain = false;
+
+	/**
 	 * Indentation string.
 	 */
 	protected $indent = "\t";
@@ -374,7 +379,9 @@ abstract class FlupdoBuilder
 				throw new FlupdoSqlException($stmt->errorInfo(), $this->query_sql, $this->query_params);
 			}
 			if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (prepare + execute)", (microtime(true) - $t) * 1000);
-			$this->explain();
+			if ($this->can_explain && $this->log_explain) {
+				$this->explain();
+			}
 			return $stmt;
 		}
 	}
@@ -440,7 +447,7 @@ abstract class FlupdoBuilder
 		$t .= "+\n";
 
 		// Log the table
-		if ($this->log_explain && function_exists('debug_msg')) {
+		if (function_exists('debug_msg')) {
 			debug_msg('Explain last query:%s', $t);
 		}
 
