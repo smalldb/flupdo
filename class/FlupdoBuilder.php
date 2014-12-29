@@ -29,6 +29,16 @@ abstract class FlupdoBuilder
 	protected $pdo;
 
 	/**
+	 * Log all queries as they are executed
+	 */
+	protected $log_query;
+
+	/**
+	 * Explain each query to log.
+	 */
+	protected $log_explain;
+
+	/**
 	 * Indentation string.
 	 */
 	protected $indent = "\t";
@@ -83,9 +93,11 @@ abstract class FlupdoBuilder
 	/**
 	 * Constructor.
 	 */
-	public function __construct($pdo)
+	public function __construct($pdo, $log_query = false, $log_explain = false)
 	{
 		$this->pdo = $pdo;
+		$this->log_query = $log_query;
+		$this->log_explain = $log_explain;
 	}
 
 
@@ -193,7 +205,7 @@ abstract class FlupdoBuilder
 	{
 		try {
 			$q = $this->compileQuery();
-			if (function_exists('debug_msg')) {
+			if ($this->log_query && function_exists('debug_msg')) {
 				debug_msg("SQL Query:\n%s", $this->query_sql);
 			}
 			return $q;
@@ -299,11 +311,11 @@ abstract class FlupdoBuilder
 		if ($this->query_sql === null) {
 			$this->compile();
 		}
-		if (function_exists('debug_msg')) debug_msg("SQL Query:\n%s", $this->query_sql);
+		if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query:\n%s", $this->query_sql);
 		if (empty($this->query_params)) {
 			$t = microtime(true);
 			$r = $this->pdo->exec($this->query_sql);
-			if (function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (exec)", (microtime(true) - $t) * 1000);
+			if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (exec)", (microtime(true) - $t) * 1000);
 			if ($r === FALSE) {
 				throw new FlupdoSqlException($this->pdo->errorInfo(), $this->query_sql, $this->query_params);
 			}
@@ -331,7 +343,7 @@ abstract class FlupdoBuilder
 		if (empty($this->query_params)) {
 			$t = microtime(true);
 			$result = $this->pdo->query($this->query_sql);
-			if (function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (query)", (microtime(true) - $t) * 1000);
+			if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (query)", (microtime(true) - $t) * 1000);
 			if (!$result) {
 				throw new FlupdoSqlException($this->pdo->errorInfo(), $this->query_sql, $this->query_params);
 			}
@@ -361,9 +373,114 @@ abstract class FlupdoBuilder
 			if ($stmt->execute() === FALSE) {
 				throw new FlupdoSqlException($stmt->errorInfo(), $this->query_sql, $this->query_params);
 			}
-			if (function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (prepare + execute)", (microtime(true) - $t) * 1000);
+			if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (prepare + execute)", (microtime(true) - $t) * 1000);
+			$this->explain();
 			return $stmt;
 		}
+	}
+
+
+	/**
+	 * Explain the query and dump result to log.
+	 */
+	protected function explain()
+	{
+		if ($this->query_sql === null) {
+			$this->compile();
+		}
+
+		$sql = "\n    EXPLAIN\n" . $this->interpolateQuery($this->query_sql, $this->query_params);
+
+		$explain = $this->pdo->query($sql);
+
+		$data = $explain->fetchAll(\PDO::FETCH_ASSOC);
+		$col_len = array();
+		$t = "\n";
+
+		// Calculate column widths
+		foreach ($data as $row) {
+			foreach ($row as $k => $v) {
+				$col_len[$k] = isset($col_len[$k]) ? max($col_len[$k], strlen($v)) : strlen($v);
+			}
+		}
+		foreach ($col_len as $k => $len) {
+			$col_len[$k] = max($len, strlen($k));
+		}
+
+		// Horizontal Line
+		foreach ($col_len as $k => $len) {
+			$t .= '+'.str_repeat('-', $len + 2);
+		}
+		$t .= "+\n";
+
+		// Table header
+		foreach ($col_len as $k => $len) {
+			$t .= sprintf('| %-'.$len.'s ', $k);
+		}
+		$t .= "+\n";
+
+		// Horizontal Line
+		foreach ($col_len as $k => $len) {
+			$t .= '+'.str_repeat('-', $len + 2);
+		}
+		$t .= "+\n";
+
+		// Table body
+		foreach ($data as $row) {
+			foreach ($row as $k => $v) {
+				$t .= sprintf('| %-'.$col_len[$k].'s ', $v);
+			}
+			$t .= "|\n";
+		}
+
+		// Horizontal Line
+		foreach ($col_len as $k => $len) {
+			$t .= '+'.str_repeat('-', $len + 2);
+		}
+		$t .= "+\n";
+
+		// Log the table
+		if ($this->log_explain && function_exists('debug_msg')) {
+			debug_msg('Explain last query:%s', $t);
+		}
+
+		// Make sure EXPLAIN query is destroyed.
+		$this->uncompile();
+	}
+
+
+	/**
+	 * Replaces any parameter placeholders in a query with the value of that
+	 * parameter. Useful for debugging. Assumes anonymous parameters from 
+	 * $params are are in the same order as specified in $query
+	 *
+	 * @see http://stackoverflow.com/questions/210564/getting-raw-sql-query-string-from-pdo-prepared-statements
+	 *
+	 * Added `$pdo->quote()` to properly escape all values.
+	 *
+	 * @param string $query The sql query with parameter placeholders
+	 * @param array $params The array of substitution parameters
+	 * @return string The interpolated query
+	 */
+	private function interpolateQuery($query, $params)
+	{
+		$keys = array();
+
+		# build a regular expression for each parameter
+		foreach ($params as $key => $value) {
+			if (is_string($key)) {
+				$keys[] = '/:'.$key.'/';
+			} else {
+				$keys[] = '/[?]/';
+			}
+		}
+
+		$pdo = $this->pdo;
+		$query = preg_replace($keys, array_map(function($a) use ($pdo) { return $pdo->quote($a); }, $params), $query, 1, $count);
+
+		#trigger_error('replaced '.$count.' keys');
+
+		return $query;
 	}
 
 

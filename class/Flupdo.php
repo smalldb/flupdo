@@ -26,6 +26,17 @@ class Flupdo extends \PDO
 {
 
 	/**
+	 * Log all queries as they are executed
+	 */
+	private $log_query;
+
+	/**
+	 * Explain each query to log.
+	 */
+	private $log_explain;
+
+
+	/**
 	 * Returns fresh instance of Flupdo query builder.
 	 */
 	function __call($method, $args)
@@ -34,7 +45,7 @@ class Flupdo extends \PDO
 		if (!class_exists($class)) {
 			throw new \BadMethodCallException('Undefined method "'.$method.'".');
 		}
-		$builder = new $class($this);
+		$builder = new $class($this, $this->log_query, $this->log_explain);
 		if (!empty($args)) {
 			$builder->__call($method, $args);
 		}
@@ -77,18 +88,20 @@ class Flupdo extends \PDO
 	 */
 	public static function createInstanceFromConfig($config)
 	{
-		$driver   = isset($config['driver'])   ? $config['driver']   : null;
-		$host     = isset($config['host'])     ? $config['host']     : null;
-		$database = isset($config['database']) ? $config['database'] : null;
-		$username = isset($config['username']) ? $config['username'] : null;
-		$password = isset($config['password']) ? $config['password'] : null;
+		$driver      = isset($config['driver'])      ? $config['driver']      : null;
+		$host        = isset($config['host'])        ? $config['host']        : null;
+		$database    = isset($config['database'])    ? $config['database']    : null;
+		$username    = isset($config['username'])    ? $config['username']    : null;
+		$password    = isset($config['password'])    ? $config['password']    : null;
+		$log_query   = isset($config['log_query'])   ? $config['log_query']   : false;
+		$log_explain = isset($config['log_explain']) ? $config['log_explain'] : false;
 
 		if (isset($config['dsn'])) {
-			return new self($config['dsn'], $username, $password, array(
+			$n = new self($config['dsn'], $username, $password, array(
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
 		} else if ($driver == 'mysql') {
-			return new self("mysql:dbname=$database;host=$host;charset=UTF8",
+			$n = new self("mysql:dbname=$database;host=$host;charset=UTF8",
 				$username, $password,
 				array(
 					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'; SET time_zone = \''.date_default_timezone_get().'\';'
@@ -96,7 +109,7 @@ class Flupdo extends \PDO
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
 		} else if ($driver == 'sphinx') {
-			return new self("mysql:dbname=$database;host=$host;charset=UTF8",
+			$n = new self("mysql:dbname=$database;host=$host;charset=UTF8",
 				$username, $password,
 				array(
 					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'; SET time_zone = \''.date_default_timezone_get().'\';'
@@ -104,23 +117,31 @@ class Flupdo extends \PDO
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
 		} else if ($driver == 'sqlite') {
-			return new self("sqlite:$database",
+			$n = new self("sqlite:$database",
 				null, null, array(
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
 		} else if ($host !== null) {
-			return new self("$driver:dbname=$database;host=$host;charset=UTF8",
+			$n = new self("$driver:dbname=$database;host=$host;charset=UTF8",
 				$username, $password, array(
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
 		} else {
-			return new self("$driver:dbname=$database;charset=UTF8",
+			$n = new self("$driver:dbname=$database;charset=UTF8",
 				$username, $password, array(
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
 		}
 
-		throw new \Exception('Not implemented.');
+		if ($n === null) {
+			// This should not happen
+			throw new \Exception('Not implemented.');
+		}
+
+		$n->log_explain = $log_explain;
+		$n->log_query   = $log_query;
+
+		return $n;
 	}
 
 }
