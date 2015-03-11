@@ -26,7 +26,7 @@ abstract class FlupdoBuilder
 	/**
 	 * PDO driver used to execute query and escape strings.
 	 */
-	protected $pdo;
+	public $pdo;
 
 	/**
 	 * Log all queries as they are executed
