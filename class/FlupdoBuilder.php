@@ -39,6 +39,11 @@ abstract class FlupdoBuilder
 	protected $log_explain;
 
 	/**
+	 * Sphinx does not like parenthesis in WHERE
+	 */
+	protected $no_parenthesis_in_conditions;
+
+	/**
 	 * Is it possible to explain this query?
 	 */
 	protected $can_explain = false;
@@ -98,11 +103,12 @@ abstract class FlupdoBuilder
 	/**
 	 * Constructor.
 	 */
-	public function __construct($pdo, $log_query = false, $log_explain = false)
+	public function __construct($pdo, $log_query = false, $log_explain = false, $no_parenthesis_in_conditions = false)
 	{
 		$this->pdo = $pdo;
 		$this->log_query = $log_query;
 		$this->log_explain = $log_explain;
+		$this->no_parenthesis_in_conditions = $no_parenthesis_in_conditions;
 	}
 
 
@@ -818,14 +824,26 @@ abstract class FlupdoBuilder
 
 		if (isset($this->buffers[$buffer_id])) {
 			echo $this->indent, $buffer_id;
-			foreach ($this->buffers[$buffer_id] as $buf) {
-				if ($first) {
-					$first = false;
-					echo ' (';
-				} else {
-					echo $this->sub_indent, "AND (";
+			if ($this->no_parenthesis_in_conditions) {
+				foreach ($this->buffers[$buffer_id] as $buf) {
+					if ($first) {
+						$first = false;
+						echo ' ';
+					} else {
+						echo $this->sub_indent, "AND ";
+					}
+					echo $this->sqlBuffer($buf), "\n";
 				}
-				echo $this->sqlBuffer($buf), ")\n";
+			} else {
+				foreach ($this->buffers[$buffer_id] as $buf) {
+					if ($first) {
+						$first = false;
+						echo ' (';
+					} else {
+						echo $this->sub_indent, "AND (";
+					}
+					echo $this->sqlBuffer($buf), ")\n";
+				}
 			}
 		}
 	}

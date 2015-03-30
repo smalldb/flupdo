@@ -37,6 +37,12 @@ class Flupdo extends \PDO
 
 
 	/**
+	 * Sphinx does not like parenthesis in WHERE
+	 */
+	private $no_parenthesis_in_conditions = false;
+
+
+	/**
 	 * Returns fresh instance of Flupdo query builder.
 	 */
 	function __call($method, $args)
@@ -45,7 +51,7 @@ class Flupdo extends \PDO
 		if (!class_exists($class)) {
 			throw new \BadMethodCallException('Undefined method "'.$method.'".');
 		}
-		$builder = new $class($this, $this->log_query, $this->log_explain);
+		$builder = new $class($this, $this->log_query, $this->log_explain, $this->no_parenthesis_in_conditions);
 		if (!empty($args)) {
 			$builder->__call($method, $args);
 		}
@@ -90,6 +96,7 @@ class Flupdo extends \PDO
 	{
 		$driver      = isset($config['driver'])      ? $config['driver']      : null;
 		$host        = isset($config['host'])        ? $config['host']        : null;
+		$port        = isset($config['port'])        ? $config['port']        : null;
 		$database    = isset($config['database'])    ? $config['database']    : null;
 		$username    = isset($config['username'])    ? $config['username']    : null;
 		$password    = isset($config['password'])    ? $config['password']    : null;
@@ -101,7 +108,7 @@ class Flupdo extends \PDO
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
 		} else if ($driver == 'mysql') {
-			$n = new self("mysql:dbname=$database;host=$host;charset=UTF8",
+			$n = new self("mysql:dbname=$database;host=$host;".($port !== null ? "port=$port;":"")."charset=UTF8",
 				$username, $password,
 				array(
 					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'; SET time_zone = \''.date_default_timezone_get().'\';'
@@ -109,13 +116,13 @@ class Flupdo extends \PDO
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
 		} else if ($driver == 'sphinx') {
-			$n = new self("mysql:dbname=$database;host=$host;charset=UTF8",
+			$n = new self("mysql:dbname=$database;host=$host;port=$port;charset=UTF8",
 				$username, $password,
 				array(
-					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'; SET time_zone = \''.date_default_timezone_get().'\';'
-						.(!empty($config['disable_cache']) ? 'SET SESSION query_cache_type = OFF;' : null),
+					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'',
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
+			$n->no_parenthesis_in_conditions = true;
 		} else if ($driver == 'sqlite') {
 			$n = new self("sqlite:$database",
 				null, null, array(
