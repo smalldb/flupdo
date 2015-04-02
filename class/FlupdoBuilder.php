@@ -325,10 +325,15 @@ abstract class FlupdoBuilder
 		if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query:\n%s", $this->query_sql);
 		if (empty($this->query_params)) {
 			$t = microtime(true);
-			$r = $this->pdo->exec($this->query_sql);
-			if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (exec)", (microtime(true) - $t) * 1000);
+			try {
+				$r = $this->pdo->exec($this->query_sql);
+				if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (exec)", (microtime(true) - $t) * 1000);
+			}
+			catch (\PDOException $ex) {
+				throw new FlupdoException($ex->getMessage(), $ex->getCode(), $ex, $this->query_sql, $this->query_params);
+			}
 			if ($r === FALSE) {
-				throw new FlupdoSqlException($this->pdo->errorInfo(), $this->query_sql, $this->query_params);
+				throw new FlupdoException($this->pdo->errorInfo(), $this->pdo->errorCode(), null, $this->query_sql, $this->query_params);
 			}
 			return $r;
 		} else {
@@ -353,17 +358,27 @@ abstract class FlupdoBuilder
 
 		if (empty($this->query_params)) {
 			$t = microtime(true);
-			$result = $this->pdo->query($this->query_sql);
-			if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (query)", (microtime(true) - $t) * 1000);
+			try {
+				$result = $this->pdo->query($this->query_sql);
+				if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (query)", (microtime(true) - $t) * 1000);
+			}
+			catch (\PDOException $ex) {
+				throw new FlupdoException($ex->getMessage(), $ex->getCode(), $ex, $this->query_sql, $this->query_params);
+			}
 			if (!$result) {
-				throw new FlupdoSqlException($this->pdo->errorInfo(), $this->query_sql, $this->query_params);
+				throw new FlupdoException($this->pdo->errorInfo(), $this->pdo->errorCode(), null, $this->query_sql, $this->query_params);
 			}
 			return $result;
 		} else {
 			$t = microtime(true);
-			$stmt = $this->prepare();
+			try {
+				$stmt = $this->prepare();
+			}
+			catch (\PDOException $ex) {
+				throw new FlupdoException($ex->getMessage(), $ex->getCode(), $ex, $this->query_sql, $this->query_params);
+			}
 			if ($stmt === FALSE) {
-				throw new FlupdoSqlException($this->pdo->errorInfo(), $this->query_sql, $this->query_params);
+				throw new FlupdoException($this->pdo->errorInfo(), $this->pdo->errorCode(), null, $this->query_sql, $this->query_params);
 			}
 
 			$i = 1;
@@ -381,8 +396,14 @@ abstract class FlupdoBuilder
 				$i++;
 			}
 
-			if ($stmt->execute() === FALSE) {
-				throw new FlupdoSqlException($stmt->errorInfo(), $this->query_sql, $this->query_params);
+			try {
+				$success = $stmt->execute();
+			}
+			catch (\PDOException $ex) {
+				throw new FlupdoException($ex->getMessage(), $ex->getCode(), $ex, $this->query_sql, $this->query_params);
+			}
+			if ($success === FALSE) {
+				throw new FlupdoException($stmt->errorInfo(), $stmt->errorCode(), null, $this->query_sql, $this->query_params);
 			}
 			if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (prepare + execute)", (microtime(true) - $t) * 1000);
 			if ($this->can_explain && $this->log_explain) {

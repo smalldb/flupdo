@@ -21,12 +21,8 @@ namespace Flupdo\Flupdo;
 /**
  * Something is wrong in SQL query.
  */
-class FlupdoSqlException extends \Exception
+class FlupdoException extends \PDOException
 {
-	/**
-	 * Error info from database.
-	 */
-	protected $error_info;
 
 	/**
 	 * Failed SQL query.
@@ -42,14 +38,16 @@ class FlupdoSqlException extends \Exception
 	/**
 	 * Constructor.
 	 */
-	function __construct($error_info, $query_sql, $query_params)
+	function __construct($message = "", $code = 0, $previous = null, $query_sql = null, $query_params = null)
 	{
-		$this->error_info = (array) $error_info;
+		parent::__construct($message, $code, $previous);
+
+		if ($previous) {
+			$this->errorInfo = $previous->errorInfo;
+		}
+
 		$this->query_sql = (string) $query_sql;
 		$this->query_params = (array) $query_params;
-
-		parent::__construct('SQL error '.join(': ', $this->error_info)."\n"
-			."Query:\n".$query_sql);
 	}
 
 
@@ -68,15 +66,6 @@ class FlupdoSqlException extends \Exception
 	function getQueryParams()
 	{
 		return $this->query_params;
-	}
-
-
-	/**
-	 * Get error info received from database.
-	 */
-	function getErrorInfo()
-	{
-		return $this->error_info;
 	}
 
 }
