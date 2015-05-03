@@ -40,7 +40,8 @@ class FlupdoException extends \PDOException
 	 */
 	function __construct($message = "", $code = 0, $previous = null, $query_sql = null, $query_params = null)
 	{
-		parent::__construct($message, $code, $previous);
+		parent::__construct($message, null, $previous);
+		$this->code = $code; // PDOException has non-numeric code, we need to avoid check in \Exception::__construct
 
 		if ($previous) {
 			$this->errorInfo = $previous->errorInfo;
