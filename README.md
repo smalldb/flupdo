@@ -5,17 +5,24 @@ Flupdo is dumb SQL query builder written in PHP. It is designed to be simple,
 deterministic, transparent and easy to use. Flupdo contains no smart logic
 which is usually unpredictable when small mistakes occur.
 
-Flupdo supports (or should support) 100% of MySQL syntax. Sqlite is also
-supported, but not well tested. SphinxQL and PostgreSQL support is planned,
+Flupdo supports (or should support) 100% of MySQL syntax. Sqlite and SphinxQL
+is also supported, but not well tested. PostgreSQL support is planned,
 probably only minor tweaks will be required, so it may be usable already.
 
 Flupdo is built on top of PDO. It does not replace fetch methods nor any other
-PDO API, it only adds few builder methods which create query builder object.
-When query is executed, ordinary PDOStatement instance is returned.
+PDO API, it only adds few builder methods which create query builder object, so
+full compatibility with PDO is preserved. When query is executed, ordinary
+PDOStatement instance is returned.
 
 Flupdo supports both positional and named placeholders, but they cannot be mixed.
 
 Flupdo is tested using PHPT, the tool used by PHP itself. See `test` directory.
+
+Flupdo does not provide smart constructions and helpers to build common
+queries. Such features are out of Flupdo's scope. Flupdo is intended to be
+a basic tool used by such helpers and smart query builders to glue queries
+together. So if you want something smarter, build it on top of Flupdo. For
+example, Smalldb is such framework.
 
 
 Basic usage
