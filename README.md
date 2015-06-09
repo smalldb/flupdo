@@ -14,7 +14,11 @@ PDO API, it only adds few builder methods which create query builder object, so
 full compatibility with PDO is preserved. When query is executed, ordinary
 PDOStatement instance is returned.
 
-Flupdo supports both positional and named placeholders, but they cannot be mixed.
+Flupdo supports both positional and named placeholders, but they cannot be
+mixed. Positional placeholders are useful when their values are passed to
+the query builder together with SQL statements (see *Basic usage* section).
+Named placeholders are to be used with prepared query, where values are passed
+all at once (see *Prepared query* section).
 
 Flupdo is tested using PHPT, the tool used by PHP itself. See `test` directory.
 
