@@ -23,24 +23,24 @@ namespace Flupdo\Flupdo;
  *
  * -- http://dev.mysql.com/doc/refman/5.5/en/delete.html
  *
- *  DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
- *  [WHERE where_condition]
- *  [ORDER BY ...]
- *  [LIMIT row_count]
+ *     DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
+ *      [WHERE where_condition]
+ *      [ORDER BY ...]
+ *      [LIMIT row_count]
  *
  * -- OR --
  *
- *  DELETE [LOW_PRIORITY] [QUICK] [IGNORE]
- *  tbl_name[.*] [, tbl_name[.*]] ...
- *  FROM table_references
- *  [WHERE where_condition]
+ *     DELETE [LOW_PRIORITY] [QUICK] [IGNORE]
+ *      tbl_name[.*] [, tbl_name[.*]] ...
+ *      FROM table_references
+ *      [WHERE where_condition]
  *
  * -- OR --
  *
- *  DELETE [LOW_PRIORITY] [QUICK] [IGNORE]
- *  FROM tbl_name[.*] [, tbl_name[.*]] ...
- *  USING table_references
- *  [WHERE where_condition]
+ *     DELETE [LOW_PRIORITY] [QUICK] [IGNORE]
+ *      FROM tbl_name[.*] [, tbl_name[.*]] ...
+ *      USING table_references
+ *      [WHERE where_condition]
  *
  */
 class DeleteBuilder extends FlupdoBuilder

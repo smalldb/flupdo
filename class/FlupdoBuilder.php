@@ -869,5 +869,45 @@ abstract class FlupdoBuilder
 		}
 	}
 
+
+	/**
+	 * Generate documentation for methods defined in $methods array.
+	 */
+	public static function generateDoxygenDocumentation()
+	{
+		foreach (static::$methods as $methodName => $m) {
+			@ list($realMethod, $buffer, $label) = $m;
+			echo "/**\n";
+			echo "@memberof ", get_called_class(), "\n";
+			if ($realMethod == 'setFlag') {
+				echo "@fn $methodName()\n";
+			} else {
+				echo "@fn $methodName(\$sql_statement, ...)\n";
+				echo "@param \$sql_statement SQL statement (a fragment of SQL query) with placeholders.\n";
+				echo "@param ... Values of placeholders (when positional placeholders are used).\n";
+			}
+			echo "@public\n";
+			if ($realMethod == 'setFlag') {
+				echo "@brief Sets content of buffer `$buffer` to `$label`.\n";
+			} else if (substr($realMethod, 0, 3) == 'add') {
+				if ($label) {
+					echo "@brief Appends `\$sql_statement` prefixed with `$label` to buffer `$buffer`.\n";
+				} else {
+					echo "@brief Appends `\$sql_statement` to buffer `$buffer`.\n";
+				}
+			} else {
+				if ($label) {
+					echo "@brief Replaces content of buffer `$buffer` with `\$sql_statement` prefixed with `$label`.\n";
+				} else {
+					echo "@brief Replaces content of buffer `$buffer` with `\$sql_statement`.\n";
+				}
+			}
+			echo "\n";
+			echo "@note This method is generated from FlupdoBuilder::\$methods array. See compileQuery() method for buffer usage.\n";
+			echo "*/\n";
+			echo "\n";
+		}
+	}
+
 }
 

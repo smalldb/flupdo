@@ -23,30 +23,30 @@ namespace Flupdo\Flupdo;
  *
  * -- http://dev.mysql.com/doc/refman/5.5/en/insert.html
  *
- * INSERT [LOW_PRIORITY | DELAYED | HIGH_PRIORITY] [IGNORE]
- *  [INTO] tbl_name [(col_name,...)]
- *  {VALUES | VALUE} ({expr | DEFAULT},...),(...),...
- *  [ ON DUPLICATE KEY UPDATE
- *    col_name=expr
- *      [, col_name=expr] ... ]
+ *     INSERT [LOW_PRIORITY | DELAYED | HIGH_PRIORITY] [IGNORE]
+ *      [INTO] tbl_name [(col_name,...)]
+ *      {VALUES | VALUE} ({expr | DEFAULT},...),(...),...
+ *      [ ON DUPLICATE KEY UPDATE
+ *        col_name=expr
+ *          [, col_name=expr] ... ]
  *
  * -- OR --
  *
- *  INSERT [LOW_PRIORITY | DELAYED | HIGH_PRIORITY] [IGNORE]
- *  [INTO] tbl_name
- *  SET col_name={expr | DEFAULT}, ...
- *  [ ON DUPLICATE KEY UPDATE
- *    col_name=expr
- *     [, col_name=expr] ... ]
+ *     INSERT [LOW_PRIORITY | DELAYED | HIGH_PRIORITY] [IGNORE]
+ *      [INTO] tbl_name
+ *      SET col_name={expr | DEFAULT}, ...
+ *      [ ON DUPLICATE KEY UPDATE
+ *        col_name=expr
+ *         [, col_name=expr] ... ]
  *
  * -- OR --
  *
- * INSERT [LOW_PRIORITY | HIGH_PRIORITY] [IGNORE]
- *  [INTO] tbl_name [(col_name,...)]
- *  SELECT ...
- *  [ ON DUPLICATE KEY UPDATE
- *    col_name=expr
- *      [, col_name=expr] ... ]
+ *     INSERT [LOW_PRIORITY | HIGH_PRIORITY] [IGNORE]
+ *      [INTO] tbl_name [(col_name,...)]
+ *      SELECT ...
+ *      [ ON DUPLICATE KEY UPDATE
+ *        col_name=expr
+ *          [, col_name=expr] ... ]
  */
 
 class InsertBuilder extends FlupdoBuilder

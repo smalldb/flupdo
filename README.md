@@ -22,6 +22,8 @@ all at once (see *Prepared query* section).
 
 Flupdo is tested using PHPT, the tool used by PHP itself. See `test` directory.
 
+Flupdo is documented using Doxygen -- `make doc` will do the trick.
+
 Flupdo does not provide smart constructions and helpers to build common
 queries. Such features are out of Flupdo's scope. Flupdo is intended to be
 a basic tool used by such helpers and smart query builders to glue queries
@@ -210,6 +212,6 @@ Result query exactly as produced by Flupdo (including whitespace):
 License
 -------
 
-The most of the code is published under Apache 2.0 license. See [LICENSE](doc/license.md) file for details.
+The most of the code is published under Apache 2.0 license. See [LICENSE](license.md) file for details.
 
 

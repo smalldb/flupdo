@@ -23,21 +23,21 @@ namespace Flupdo\Flupdo;
  *
  * -- http://dev.mysql.com/doc/refman/5.5/en/replace.html
  *
- * REPLACE [LOW_PRIORITY | DELAYED]
- *  [INTO] tbl_name [(col_name,...)]
- *  {VALUES | VALUE} ({expr | DEFAULT},...),(...),...
+ *     REPLACE [LOW_PRIORITY | DELAYED]
+ *      [INTO] tbl_name [(col_name,...)]
+ *      {VALUES | VALUE} ({expr | DEFAULT},...),(...),...
  *
  * -- OR --
  *
- * REPLACE [LOW_PRIORITY | DELAYED]
- *  [INTO] tbl_name
- *  SET col_name={expr | DEFAULT}, ...
+ *     REPLACE [LOW_PRIORITY | DELAYED]
+ *      [INTO] tbl_name
+ *      SET col_name={expr | DEFAULT}, ...
  *
  * -- OR --
  *
- * REPLACE [LOW_PRIORITY | DELAYED]
- *  [INTO] tbl_name [(col_name,...)]
- *  SELECT ...
+ *     REPLACE [LOW_PRIORITY | DELAYED]
+ *      [INTO] tbl_name [(col_name,...)]
+ *      SELECT ...
  *
  */
 
