@@ -102,9 +102,13 @@ class SelectBuilder extends FlupdoBuilder
 		'limit'			=> array('replace',	'LIMIT'),
 		'offset'		=> array('replace',	'OFFSET'),
 		'procedure'		=> array('replace',	'PROCEDURE'),
+		'option'		=> array('replace',	'OPTION'),
 		'into'			=> array('replace',	'INTO'),
 		'forUpdate'		=> array('setFlag',	'LOCK',			'FOR UPDATE'),
 		'lockInShareMode'	=> array('setFlag',	'LOCK',			'LOCK IN SHARE MODE'),
+
+		// sphinx extras
+		'option'		=> array('add',		'OPTION'),
 
 		'footerComment'		=> array('replace',	'-- FOOTER'),
 	);
@@ -151,6 +155,7 @@ class SelectBuilder extends FlupdoBuilder
 		$this->sqlList('PROCEDURE', self::INDENT | self::LABEL | self::EOL);
 		$this->sqlList('INTO', self::INDENT | self::LABEL | self::EOL);
 		$this->sqlFlag('LOCK');
+		$this->sqlList('OPTION', self::INDENT | self::LABEL | self::EOL);
 		$this->sqlComment('-- FOOTER');
 
 		return $this->sqlFinish();
