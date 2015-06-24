@@ -54,6 +54,21 @@ class DeleteBuilder extends FlupdoBuilder
 		'headerComment'		=> array('replace',	'-- HEADER'),
 		'delete'		=> array('add',		'DELETE'),
 		'from'			=> array('add',		'FROM'),
+		'using'			=> array('add',		'USING'),
+
+		// multi-table deletes
+		'join'			=> array('addJoin',	'JOIN',			'JOIN'),
+		'innerJoin'		=> array('addJoin',	'JOIN',			'INNER JOIN'),
+		'crossJoin'		=> array('addJoin',	'JOIN',			'CROSS JOIN'),
+		'straightJoin'		=> array('addJoin',	'JOIN',			'STRAIGHT_JOIN'),
+		'leftJoin'		=> array('addJoin',	'JOIN',			'LEFT JOIN'),
+		'rightJoin'		=> array('addJoin',	'JOIN',			'RIGHT JOIN'),
+		'leftOuterJoin'		=> array('addJoin',	'JOIN',			'LEFT OUTER JOIN'),
+		'rightOuterJoin'	=> array('addJoin',	'JOIN',			'RIGHT OUTER JOIN'),
+		'naturalLeftJoin'	=> array('addJoin',	'JOIN',			'NATURAL LEFT JOIN'),
+		'naturalRightJoin'	=> array('addJoin',	'JOIN',			'NATURAL RIGHT JOIN'),
+		'naturalLeftOuterJoin'	=> array('addJoin',	'JOIN',			'NATURAL LEFT OUTER JOIN'),
+		'naturalRightOuterJoin'	=> array('addJoin',	'JOIN',			'NATURAL RIGHT OUTER JOIN'),
 
 		// Flags
 		'lowPriority'		=> array('setFlag',	'PRIORITY',		'LOW_PRIORITY'),
@@ -61,7 +76,6 @@ class DeleteBuilder extends FlupdoBuilder
 		'ignore'		=> array('setFlag',	'IGNORE',		'IGNORE'),
 
 		// Conditions & Values
-		'using'			=> array('add',		'USING'),
 		'where'			=> array('add',		'WHERE'),
 		'orderBy'		=> array('add',		'ORDER BY'),
 		'limit'			=> array('replace',	'LIMIT'),
@@ -87,6 +101,7 @@ class DeleteBuilder extends FlupdoBuilder
 		$this->sqlList('DELETE', 0);
 		$this->sqlList('FROM', self::LABEL | self::EOL);
 		$this->sqlConditions('USING', self::INDENT | self::LABEL | self::EOL);
+		$this->sqlJoins('JOIN');
 		$this->sqlConditions('WHERE', self::INDENT | self::LABEL | self::EOL);
 		$this->sqlList('ORDER BY', self::INDENT | self::LABEL | self::EOL);
 		$this->sqlList('LIMIT', self::INDENT | self::LABEL | self::EOL);
