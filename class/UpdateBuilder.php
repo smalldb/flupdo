@@ -48,6 +48,20 @@ class UpdateBuilder extends FlupdoBuilder
 		'headerComment'		=> array('replace',	'-- HEADER'),
 		'update'		=> array('add',		'UPDATE'),
 
+		// multi-table updates
+		'join'			=> array('addJoin',	'JOIN',			'JOIN'),
+		'innerJoin'		=> array('addJoin',	'JOIN',			'INNER JOIN'),
+		'crossJoin'		=> array('addJoin',	'JOIN',			'CROSS JOIN'),
+		'straightJoin'		=> array('addJoin',	'JOIN',			'STRAIGHT_JOIN'),
+		'leftJoin'		=> array('addJoin',	'JOIN',			'LEFT JOIN'),
+		'rightJoin'		=> array('addJoin',	'JOIN',			'RIGHT JOIN'),
+		'leftOuterJoin'		=> array('addJoin',	'JOIN',			'LEFT OUTER JOIN'),
+		'rightOuterJoin'	=> array('addJoin',	'JOIN',			'RIGHT OUTER JOIN'),
+		'naturalLeftJoin'	=> array('addJoin',	'JOIN',			'NATURAL LEFT JOIN'),
+		'naturalRightJoin'	=> array('addJoin',	'JOIN',			'NATURAL RIGHT JOIN'),
+		'naturalLeftOuterJoin'	=> array('addJoin',	'JOIN',			'NATURAL LEFT OUTER JOIN'),
+		'naturalRightOuterJoin'	=> array('addJoin',	'JOIN',			'NATURAL RIGHT OUTER JOIN'),
+
 		// Flags
 		'lowPriority'		=> array('setFlag',	'PRIORITY',		'LOW_PRIORITY'),
 		'ignore'		=> array('setFlag',	'IGNORE',		'IGNORE'),
@@ -76,6 +90,7 @@ class UpdateBuilder extends FlupdoBuilder
 				'IGNORE'
 			), self::INDENT | self::LABEL);
 		$this->sqlList('UPDATE', self::EOL);
+		$this->sqlJoins('JOIN');
 
 		$this->sqlList('SET', self::INDENT | self::LABEL | self::EOL);
 		$this->sqlConditions('WHERE', self::INDENT | self::LABEL | self::EOL);
