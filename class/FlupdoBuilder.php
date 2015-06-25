@@ -93,6 +93,7 @@ abstract class FlupdoBuilder
 	const INDENT		= 0x01;	///< List items should be indented.
 	const LABEL		= 0x02;	///< SQL fragment has a label.
 	const BRACKETS		= 0x04;	///< There are brackets around each item in the list.
+	const NO_SEPARATOR	= 0x08;	///< No separator between list items
 	const SUB_INDENT	= 0x20;	///< Indent more the first line.
 	const COMMA		= 0x40;	///< Add comma after the SQL fragment.
 	const EOL		= 0x80;	///< Add EOL after the SQL fragment.
@@ -644,6 +645,11 @@ abstract class FlupdoBuilder
 					echo $fragment;
 				}
 			}
+		} else if ($sql instanceof self) {
+			$sql->indent = $this->sub_indent."\t";
+			$sql->compile();
+			echo "(\n", $sql->query_sql, $sql->sub_indent, ")";
+			$this->query_params[] = $sql->query_params;
 		} else {
 			echo $sql;
 		}
@@ -760,7 +766,7 @@ abstract class FlupdoBuilder
 			}
 			foreach ($this->buffers[$buffer_id] as $buf) {
 				if ($decorations & self::BRACKETS) {
-					if ($first) {
+					if ($first || ($decorations & self::NO_SEPARATOR)) {
 						$first = false;
 					} else {
 						echo ", ";
@@ -769,6 +775,8 @@ abstract class FlupdoBuilder
 					if ($first) {
 						$first = false;
 						echo ' ';
+					} else if ($decorations & self::NO_SEPARATOR) {
+						echo "\n", $this->sub_indent;
 					} else {
 						echo ",\n", $this->sub_indent;
 					}
