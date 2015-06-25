@@ -69,6 +69,40 @@ class InsertBuilder extends FlupdoBuilder
 		// Conditions & Values
 		'values'		=> array('add',		'VALUES'),
 		'set'			=> array('add',		'SET'),
+
+		// INSERT ... SELECT
+		'select'		=> array('add',		'SELECT'),
+
+		// Select flags
+		'all'			=> array('setFlag',	'DISTINCT',		'ALL'),
+		'distinct'		=> array('setFlag',	'DISTINCT',		'DISTINCT'),
+		'distinctRow'		=> array('setFlag',	'DISTINCT',		'DISTINCTROW'),
+		'straightJoin'		=> array('setFlag',	'STRAIGHT_JOIN',	'STRAIGHT_JOIN'),
+
+		// Select From and joins
+		'from'			=> array('replace',	'FROM'),
+		'join'			=> array('addJoin',	'JOIN',			'JOIN'),
+		'innerJoin'		=> array('addJoin',	'JOIN',			'INNER JOIN'),
+		'crossJoin'		=> array('addJoin',	'JOIN',			'CROSS JOIN'),
+		'straightJoin'		=> array('addJoin',	'JOIN',			'STRAIGHT_JOIN'),
+		'leftJoin'		=> array('addJoin',	'JOIN',			'LEFT JOIN'),
+		'rightJoin'		=> array('addJoin',	'JOIN',			'RIGHT JOIN'),
+		'leftOuterJoin'		=> array('addJoin',	'JOIN',			'LEFT OUTER JOIN'),
+		'rightOuterJoin'	=> array('addJoin',	'JOIN',			'RIGHT OUTER JOIN'),
+		'naturalLeftJoin'	=> array('addJoin',	'JOIN',			'NATURAL LEFT JOIN'),
+		'naturalRightJoin'	=> array('addJoin',	'JOIN',			'NATURAL RIGHT JOIN'),
+		'naturalLeftOuterJoin'	=> array('addJoin',	'JOIN',			'NATURAL LEFT OUTER JOIN'),
+		'naturalRightOuterJoin'	=> array('addJoin',	'JOIN',			'NATURAL RIGHT OUTER JOIN'),
+
+		// Select Conditions
+		'where'			=> array('add',		'WHERE'),
+		'groupBy'		=> array('add',		'GROUP BY'),
+		'having'		=> array('add',		'HAVING'),
+		'orderBy'		=> array('add',		'ORDER BY'),
+		'limit'			=> array('replace',	'LIMIT'),
+		'offset'		=> array('replace',	'OFFSET'),
+
+		// Update on duplicate
 		'onDuplicateKeyUpdate'	=> array('add',		'ON DUPLICATE KEY UPDATE'),
 
 		// Footer
@@ -91,8 +125,37 @@ class InsertBuilder extends FlupdoBuilder
 		$this->sqlList('INTO', self::LABEL | self::EOL);
 		$this->sqlList('INSERT', self::INDENT | self::BRACKETS | self::EOL);
 
-		$this->sqlValuesList('VALUES');
-		$this->sqlList('SET', self::INDENT | self::LABEL | self::EOL);
+		if (isset($this->buffers['SELECT'])) {
+			// INSERT ... SELECT
+			$this->sqlStatementFlags('SELECT', array(
+					'DISTINCT',
+					'HIGH_PRIORITY',
+					'STRAIGHT_JOIN',
+				), self::INDENT | self::LABEL);
+			if (isset($this->buffers['SELECT_FIRST'])) {
+				$this->sqlList('SELECT_FIRST', self::COMMA | self::EOL);
+				$this->sqlList('SELECT', self::SUB_INDENT | self::EOL);
+			} else {
+				$this->sqlList('SELECT', self::EOL);
+			}
+			$this->sqlList('FROM', self::INDENT | self::LABEL | self::EOL);
+			$this->sqlJoins('JOIN');
+			$this->sqlConditions('WHERE');
+			$this->sqlList('GROUP BY', self::INDENT | self::LABEL | self::EOL);
+			$this->sqlConditions('HAVING');
+			$this->sqlList('ORDER BY', self::INDENT | self::LABEL | self::EOL);
+			if (isset($this->buffers['LIMIT'])) {
+				$this->sqlList('LIMIT', self::INDENT | self::LABEL | self::EOL);
+				$this->sqlList('OFFSET', self::INDENT | self::LABEL | self::EOL);
+			}
+		} else if (isset($this->buffers['VALUES'])) {
+			// INSERT ... VALUES
+			$this->sqlValuesList('VALUES');
+		} else {
+			// INSERT ... SET
+			$this->sqlList('SET', self::INDENT | self::LABEL | self::EOL);
+		}
+
 		$this->sqlList('ON DUPLICATE KEY UPDATE', self::INDENT | self::LABEL | self::EOL);
 
 		$this->sqlComment('-- FOOTER');

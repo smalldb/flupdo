@@ -765,8 +765,14 @@ abstract class FlupdoBuilder
 				echo '(';
 			}
 			foreach ($this->buffers[$buffer_id] as $buf) {
-				if ($decorations & self::BRACKETS) {
-					if ($first || ($decorations & self::NO_SEPARATOR)) {
+				if ($decorations & self::NO_SEPARATOR) {
+					if ($first) {
+						$first = false;
+					} else {
+						echo "\n", $this->sub_indent;
+					}
+				} else if ($decorations & self::BRACKETS) {
+					if ($first) {
 						$first = false;
 					} else {
 						echo ", ";
@@ -775,8 +781,6 @@ abstract class FlupdoBuilder
 					if ($first) {
 						$first = false;
 						echo ' ';
-					} else if ($decorations & self::NO_SEPARATOR) {
-						echo "\n", $this->sub_indent;
 					} else {
 						echo ",\n", $this->sub_indent;
 					}

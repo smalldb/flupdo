@@ -79,7 +79,6 @@ class SelectBuilder extends FlupdoBuilder
 		'sqlCalcFoundRows'	=> array('setFlag',	'SQL_CALC_FOUND_ROWS',	'SQL_CALC_FOUND_ROWS'),
 
 		// From and joins
-		// FIXME: Joins should be part of FROM
 		'from'			=> array('replace',	'FROM'),
 		'join'			=> array('addJoin',	'JOIN',			'JOIN'),
 		'innerJoin'		=> array('addJoin',	'JOIN',			'INNER JOIN'),
@@ -102,7 +101,6 @@ class SelectBuilder extends FlupdoBuilder
 		'limit'			=> array('replace',	'LIMIT'),
 		'offset'		=> array('replace',	'OFFSET'),
 		'procedure'		=> array('replace',	'PROCEDURE'),
-		'option'		=> array('replace',	'OPTION'),
 		'into'			=> array('replace',	'INTO'),
 		'forUpdate'		=> array('setFlag',	'LOCK',			'FOR UPDATE'),
 		'lockInShareMode'	=> array('setFlag',	'LOCK',			'LOCK IN SHARE MODE'),
