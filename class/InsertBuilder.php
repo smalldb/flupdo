@@ -69,7 +69,6 @@ class InsertBuilder extends FlupdoBuilder
 		// Conditions & Values
 		'values'		=> array('add',		'VALUES'),
 		'set'			=> array('add',		'SET'),
-		'where'			=> array('add',		'WHERE'),
 		'onDuplicateKeyUpdate'	=> array('add',		'ON DUPLICATE KEY UPDATE'),
 
 		// Footer
@@ -94,7 +93,6 @@ class InsertBuilder extends FlupdoBuilder
 
 		$this->sqlValuesList('VALUES');
 		$this->sqlList('SET', self::INDENT | self::LABEL | self::EOL);
-		$this->sqlConditions('WHERE');
 		$this->sqlList('ON DUPLICATE KEY UPDATE', self::INDENT | self::LABEL | self::EOL);
 
 		$this->sqlComment('-- FOOTER');
