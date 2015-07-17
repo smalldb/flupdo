@@ -150,9 +150,9 @@ abstract class FlupdoBuilder
 	public function quoteIdent($ident)
 	{
 		if (is_array($ident)) {
-			return array_map(function($ident) { return str_replace("`", "``", $ident); }, $ident);
+			return array_map(function($ident) { return '`' . str_replace("`", "``", $ident) . '`'; }, $ident);
 		} else {
-			return str_replace("`", "``", $ident);
+			return '`' . str_replace("`", "``", $ident) . '`';
 		}
 	}
 
