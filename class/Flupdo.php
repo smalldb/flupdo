@@ -90,7 +90,6 @@ class Flupdo extends \PDO implements IFlupdo
 	 *   - host
 	 *   - username
 	 *   - password
-	 *   - disable_cache (bool)
 	 *
 	 * See [PDO](http://www.php.net/manual/en/class.pdo.php) documentation for details.
 	 */
@@ -113,8 +112,7 @@ class Flupdo extends \PDO implements IFlupdo
 			$n = new self("mysql:dbname=$database;host=$host;".($port !== null ? "port=$port;":"")."charset=UTF8",
 				$username, $password,
 				array(
-					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'; SET time_zone = \''.date_default_timezone_get().'\';'
-						.(!empty($config['disable_cache']) ? 'SET SESSION query_cache_type = OFF;' : null),
+					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'; SET time_zone = \''.date_default_timezone_get().'\';',
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
 		} else if ($driver == 'sphinx') {
