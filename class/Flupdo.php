@@ -60,14 +60,16 @@ class Flupdo extends \PDO implements IFlupdo
 
 
 	/**
-	 * Quote identifier for use in SQL query (i.e. table name, column name).
+	 * Quote identifier for use in SQL query (i.e. table name, column name), preserve dot.
+	 *
+	 * This is a copy of FlupdoBuilder::quoteIdent().
 	 */
 	public function quoteIdent($ident)
 	{
 		if (is_array($ident)) {
-			return array_map(function($ident) { return '`' . str_replace("`", "``", $ident) . '`'; }, $ident);
+			return array_map(function($ident) { return '`' . str_replace(array('`', '.'), array('``', '`.`'), $ident) . '`'; }, $ident);
 		} else {
-			return '`' . str_replace("`", "``", $ident) . '`';
+			return '`' . str_replace(array('`', '.'), array('``', '`.`'), $ident) . '`';
 		}
 	}
 
