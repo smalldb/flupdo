@@ -79,7 +79,7 @@ class SelectBuilder extends FlupdoBuilder
 		'sqlCalcFoundRows'	=> array('setFlag',	'SQL_CALC_FOUND_ROWS',	'SQL_CALC_FOUND_ROWS'),
 
 		// From and joins
-		'from'			=> array('replace',	'FROM'),
+		'from'			=> array('add',		'FROM'),
 		'join'			=> array('addJoin',	'JOIN',			'JOIN'),
 		'innerJoin'		=> array('addJoin',	'JOIN',			'INNER JOIN'),
 		'crossJoin'		=> array('addJoin',	'JOIN',			'CROSS JOIN'),
