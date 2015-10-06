@@ -577,13 +577,29 @@ abstract class FlupdoBuilder
 	 * Fetch everything into array
 	 *
 	 * Returns what PDOStatement::fetchAll(\PDO::FETCH_ASSOC) would return.
+	 *
+	 * If $key_column is set, the specified column will be used to index
+	 * array items.
+	 *
+	 * @note Keep in mind that this is not effective for larger data sets.
+	 * 	It is better to perform the query and iterate over result
+	 * 	instead of loading it all at once. However, it may not be
+	 * 	possible in all cases.
 	 */
-	public function fetchAll()
+	public function fetchAll($key_column = null)
 	{
 		$result = $this->query();
-		$value = $result->fetchAll(\PDO::FETCH_ASSOC);
+		if ($key_column === null) {
+			$list = $result->fetchAll(\PDO::FETCH_ASSOC);
+		} else {
+			$list = array();
+			while(($item = $result->fetch(\PDO::FETCH_ASSOC))) {
+				$list[$item[$key_column]] = $item;
+			}
+			return $list;
+		}
 		$result->closeCursor();
-		return $value;
+		return $list;
 	}
 
 
