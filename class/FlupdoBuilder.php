@@ -574,6 +574,20 @@ abstract class FlupdoBuilder
 
 
 	/**
+	 * Fetch everything into array
+	 *
+	 * Returns what PDOStatement::fetchAll(\PDO::FETCH_ASSOC) would return.
+	 */
+	public function fetchAll()
+	{
+		$result = $this->query();
+		$value = $result->fetchAll(\PDO::FETCH_ASSOC);
+		$result->closeCursor();
+		return $value;
+	}
+
+
+	/**
 	 * Get SQL query as a string.
 	 */
 	public function __toString()
