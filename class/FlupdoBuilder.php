@@ -562,7 +562,7 @@ abstract class FlupdoBuilder
 	/**
 	 * Fetch one row from result and close cursor.
 	 *
-	 * Returns what PDOStatement::fetch() would return.
+	 * Returns what PDOStatement::fetchColumn(0) would return.
 	 */
 	public function fetchSingleValue()
 	{
