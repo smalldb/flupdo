@@ -75,6 +75,15 @@ class Flupdo extends \PDO implements IFlupdo
 
 
 	/**
+	 * Returns object marking raw SQL statement.
+	 */
+	public function rawSql($sql)
+	{
+		return new FlupdoRawSql($sql);
+	}
+
+
+	/**
 	 * Creates instance of this class using configuration specified in array.
 	 *
 	 * $config is array containing these keys:
