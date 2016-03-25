@@ -121,16 +121,22 @@ class Flupdo extends \PDO implements IFlupdo
 			$n = new self("mysql:dbname=$database;host=$host;".($port !== null ? "port=$port;":"")."charset=UTF8",
 				$username, $password,
 				array(
-					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'; SET time_zone = \''.date_default_timezone_get().'\';',
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
+			$n->exec("SET NAMES 'UTF8'");
+			try {
+				$n->exec("SET time_zone = '".date_default_timezone_get()."'");
+			}
+			catch (\Exception $ex) {
+				error_log('Failed to sync timezone in MySQL with PHP: '.$ex->getMessage());
+			}
 		} else if ($driver == 'sphinx') {
 			$n = new self("mysql:dbname=$database;host=$host;port=$port;charset=UTF8",
 				$username, $password,
 				array(
-					self::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'',
 					self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION,
 				));
+			$n->exec("SET NAMES 'UTF8'");
 			$n->no_parenthesis_in_conditions = true;
 		} else if ($driver == 'sqlite') {
 			$n = new self("sqlite:$database",
