@@ -212,6 +212,6 @@ Result query exactly as produced by Flupdo (including whitespace):
 License
 -------
 
-The most of the code is published under Apache 2.0 license. See [LICENSE](license.md) file for details.
+The most of the code is published under Apache 2.0 license. See [LICENSE](doc/license.md) file for details.
 
 

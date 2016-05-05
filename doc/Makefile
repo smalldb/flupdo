@@ -1,4 +1,4 @@
 doc:
 	./build_generated_doc.php > generated.dox
-	doxygen
+	cd .. && ./vendor/cascade/doc-tools/bin/build-documentation
 
