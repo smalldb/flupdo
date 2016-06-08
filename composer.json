@@ -1,15 +1,15 @@
 {
-    "name": "flupdo/flupdo",
-    "description": "Flupdo: Simple and fully featured fluent query builder",
+    "name": "smalldb/flupdo",
+    "description": "Flupdo: A simple and fully featured fluent query builder",
     "license": "Apache-2.0",
     "authors": [
         {
             "name": "Josef Kufner",
-            "email": "jk@frozen-doe.net"
+            "email": "josef@kufner.cz"
         }
     ],
     "autoload": {
-        "psr-4": { "Flupdo\\Flupdo\\": "class/" }
+        "psr-4": { "Smalldb\\Flupdo\\": "class/" }
     },
     "repositories": [
         { "type": "composer", "url": "https://akvarko.frozen-doe.net/composer/" }
@@ -19,7 +19,7 @@
         "ext-PDO": "*"
     },
     "require-dev": {
-        "cascade/doc-tools": "dev-master"
+        "smalldb/doc-tools": "dev-master"
     },
     "suggest": {
         "ext-pdo_mysql": "MySQL driver for PDO",

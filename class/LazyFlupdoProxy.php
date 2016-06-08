@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-namespace Flupdo\Flupdo;
+namespace Smalldb\Flupdo;
 
 /**
  * Proxy to instantiate Flupdo lazily and to deffer creating database

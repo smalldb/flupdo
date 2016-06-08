@@ -16,7 +16,7 @@
  *
  */
 
-namespace Flupdo\Flupdo;
+namespace Smalldb\Flupdo;
 
 /**
  * Represent raw SQL fragment to avoid quoting.

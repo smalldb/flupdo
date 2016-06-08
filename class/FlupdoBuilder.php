@@ -16,7 +16,7 @@
  *
  */
 
-namespace Flupdo\Flupdo;
+namespace Smalldb\Flupdo;
 
 /**
  * Query builder base class, which provides some magic to build queries.

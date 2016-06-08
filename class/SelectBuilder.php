@@ -16,7 +16,7 @@
  *
  */
 
-namespace Flupdo\Flupdo;
+namespace Smalldb\Flupdo;
 
 /**
  * Flupdo Builder for SELECT statement

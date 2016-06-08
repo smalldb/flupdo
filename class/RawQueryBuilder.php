@@ -16,7 +16,7 @@
  *
  */
 
-namespace Flupdo\Flupdo;
+namespace Smalldb\Flupdo;
 
 /**
  * Flupdo Builder for any other statement. This allows to use of subselects

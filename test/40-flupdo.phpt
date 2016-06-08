@@ -13,7 +13,7 @@ $db->close();
 echo "\n";
 
 echo "Initializing Flupdo on training dummy ...\n";
-$flupdo = new \Flupdo\Flupdo\Flupdo('sqlite:'.$db_filename);
+$flupdo = new \Smalldb\Flupdo\Flupdo('sqlite:'.$db_filename);
 echo "\n";
 
 echo "Simple insert:\n";

@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-namespace Flupdo\Flupdo;
+namespace Smalldb\Flupdo;
 
 /**
  * Interface implemented by Flupdo and all proxies.

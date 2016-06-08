@@ -6,7 +6,7 @@ Flupdo stress test -- query building only, no DB access
 require(dirname(__FILE__).'/init.php');
 
 echo "Initializing Flupdo on training dummy ...\n";
-$flupdo = new \Flupdo\Flupdo\Flupdo('sqlite:/dev/null');
+$flupdo = new \Smalldb\Flupdo\Flupdo('sqlite:/dev/null');
 echo "\n";
 
 $start_time = microtime(true);
