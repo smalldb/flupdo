@@ -18,11 +18,11 @@
  */
 
 spl_autoload_register(function($class) {
-	require("../class/".str_replace('Flupdo\\Flupdo\\', '', $class).".php");
+	require("../class/".str_replace('Smalldb\\Flupdo\\', '', $class).".php");
 });
 
 foreach (glob("../class/*.php") as $f) {
-	$class = "Flupdo\\Flupdo\\".str_replace('.php', '', basename($f));
+	$class = "Smalldb\\Flupdo\\".str_replace('.php', '', basename($f));
 	if (method_exists($class, "generateDoxygenDocumentation")) {
 		$class::generateDoxygenDocumentation();
 	}

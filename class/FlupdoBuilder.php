@@ -576,7 +576,7 @@ abstract class FlupdoBuilder
 	/**
 	 * Fetch everything into array
 	 *
-	 * Returns what PDOStatement::fetchAll(\PDO::FETCH_ASSOC) would return.
+	 * Returns what PDOStatement::fetchAll(PDO::FETCH_ASSOC) would return.
 	 *
 	 * If $key_column is set, the specified column will be used to index
 	 * array items.
