@@ -30,6 +30,9 @@ a basic tool used by such helpers and smart query builders to glue queries
 together. So if you want something smarter, build it on top of Flupdo. For
 example, Smalldb is such framework.
 
+For more details see the project website: https://smalldb.org/
+
+
 
 Basic usage
 -----------
@@ -209,9 +212,21 @@ Result query exactly as produced by Flupdo (including whitespace):
         ORDER BY n DESC
 
 
+Documentation
+-------------
+
+See https://smalldb.org/doc/flupdo/master/
+
+
 License
 -------
 
 The most of the code is published under Apache 2.0 license. See [LICENSE](doc/license.md) file for details.
 
+
+Contribution guidelines
+-----------------------
+
+Project's primary repository is hosted at https://git.frozen-doe.net/smalldb/flupdo, 
+feel free to submit issues or create merge requests there.
 
