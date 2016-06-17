@@ -11,15 +11,15 @@
     "autoload": {
         "psr-4": { "Smalldb\\Flupdo\\": "class/" }
     },
-    "repositories": [
-        { "type": "composer", "url": "https://akvarko.frozen-doe.net/composer/" }
-    ],
     "require": {
         "php": ">=5.4",
         "ext-PDO": "*"
     },
     "require-dev": {
         "smalldb/doc-tools": "dev-master"
+    },
+    "replace": {
+        "flupdo/flupdo": "*"
     },
     "suggest": {
         "ext-pdo_mysql": "MySQL driver for PDO",
