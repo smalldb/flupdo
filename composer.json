@@ -2,6 +2,7 @@
     "name": "smalldb/flupdo",
     "description": "Flupdo: A simple and fully featured fluent query builder",
     "license": "Apache-2.0",
+    "homepage": "https://smalldb.org/",
     "authors": [
         {
             "name": "Josef Kufner",
