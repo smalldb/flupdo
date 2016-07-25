@@ -334,7 +334,8 @@ abstract class FlupdoBuilder
 				throw new FlupdoException($ex->getMessage(), $ex->getCode(), $ex, $this->query_sql, $this->query_params);
 			}
 			if ($r === FALSE) {
-				throw new FlupdoException($this->pdo->errorInfo(), $this->pdo->errorCode(), null, $this->query_sql, $this->query_params);
+				throw new FlupdoException(vsprintf("SQLSTATE[%s]: Error %s: %s", $this->pdo->errorInfo()),
+					$this->pdo->errorCode(), null, $this->query_sql, $this->query_params);
 			}
 			return $r;
 		} else {
@@ -368,7 +369,8 @@ abstract class FlupdoBuilder
 				throw new FlupdoException($ex->getMessage(), $ex->getCode(), $ex, $this->query_sql, $this->query_params);
 			}
 			if (!$result) {
-				throw new FlupdoException($this->pdo->errorInfo(), $this->pdo->errorCode(), null, $this->query_sql, $this->query_params);
+				throw new FlupdoException(vsprintf("SQLSTATE[%s]: Error %s: %s", $this->pdo->errorInfo()),
+					$this->pdo->errorCode(), null, $this->query_sql, $this->query_params);
 			}
 			return $result;
 		} else {
@@ -380,7 +382,8 @@ abstract class FlupdoBuilder
 				throw new FlupdoException($ex->getMessage(), $ex->getCode(), $ex, $this->query_sql, $this->query_params);
 			}
 			if ($stmt === FALSE) {
-				throw new FlupdoException($this->pdo->errorInfo(), $this->pdo->errorCode(), null, $this->query_sql, $this->query_params);
+				throw new FlupdoException(vsprintf("SQLSTATE[%s]: Error %s: %s", $this->pdo->errorInfo()),
+					$this->pdo->errorCode(), null, $this->query_sql, $this->query_params);
 			}
 
 			$i = 1;
@@ -405,7 +408,8 @@ abstract class FlupdoBuilder
 				throw new FlupdoException($ex->getMessage(), $ex->getCode(), $ex, $this->query_sql, $this->query_params);
 			}
 			if ($success === FALSE) {
-				throw new FlupdoException($stmt->errorInfo(), $stmt->errorCode(), null, $this->query_sql, $this->query_params);
+				throw new FlupdoException(vsprintf("SQLSTATE[%s]: Error %s: %s", $stmt->errorInfo()),
+					$stmt->errorCode(), null, $this->query_sql, $this->query_params);
 			}
 			if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (prepare + execute), %d rows.",
 					(microtime(true) - $t) * 1000, $stmt->rowCount());
