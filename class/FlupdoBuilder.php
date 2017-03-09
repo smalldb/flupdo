@@ -217,8 +217,8 @@ abstract class FlupdoBuilder
 	{
 		try {
 			$q = $this->compileQuery();
-			if ($this->log_query && function_exists('debug_msg')) {
-				debug_msg("SQL Query:\n%s", $this->query_sql);
+			if ($this->log_query) {
+				error_log(sprintf("SQL Query (compile):\n%s", $this->query_sql));
 			}
 			return $q;
 		}
@@ -323,12 +323,16 @@ abstract class FlupdoBuilder
 		if ($this->query_sql === null) {
 			$this->compile();
 		}
-		if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query:\n%s", $this->query_sql);
+		if ($this->log_query) {
+			error_log(sprintf("SQL Query (exec):\n%s", $this->query_sql));
+		}
 		if (empty($this->query_params)) {
 			$t = microtime(true);
 			try {
 				$r = $this->pdo->exec($this->query_sql);
-				if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (exec).", (microtime(true) - $t) * 1000);
+				if ($this->log_query) {
+					error_log(sprintf("SQL Query time: %F ms (exec).", (microtime(true) - $t) * 1000));
+				}
 			}
 			catch (\PDOException $ex) {
 				throw new FlupdoException($ex->getMessage(), $ex->getCode(), $ex, $this->query_sql, $this->query_params);
@@ -362,8 +366,9 @@ abstract class FlupdoBuilder
 			$t = microtime(true);
 			try {
 				$result = $this->pdo->query($this->query_sql);
-				if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (query), %d rows.",
-						(microtime(true) - $t) * 1000, $result->rowCount());
+				if ($this->log_query) {
+					error_log(sprintf("SQL Query time: %F ms (query), %d rows.", (microtime(true) - $t) * 1000, $result->rowCount()));
+				}
 			}
 			catch (\PDOException $ex) {
 				throw new FlupdoException($ex->getMessage(), $ex->getCode(), $ex, $this->query_sql, $this->query_params);
@@ -411,8 +416,9 @@ abstract class FlupdoBuilder
 				throw new FlupdoException(vsprintf("SQLSTATE[%s]: Error %s: %s", $stmt->errorInfo()),
 					$stmt->errorCode(), null, $this->query_sql, $this->query_params);
 			}
-			if ($this->log_query && function_exists('debug_msg')) debug_msg("SQL Query time: %F ms (prepare + execute), %d rows.",
-					(microtime(true) - $t) * 1000, $stmt->rowCount());
+			if ($this->log_query) {
+				error_log(sprintf("SQL Query time: %F ms (prepare + execute), %d rows.", (microtime(true) - $t) * 1000, $stmt->rowCount()));
+			}
 			if ($this->can_explain && $this->log_explain) {
 				$this->explain();
 			}
