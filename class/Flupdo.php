@@ -24,64 +24,7 @@ namespace Smalldb\Flupdo;
  */
 class Flupdo extends \PDO implements IFlupdo
 {
-
-	/**
-	 * Log all queries as they are executed
-	 */
-	private $log_query;
-
-	/**
-	 * Explain each query to log.
-	 */
-	private $log_explain;
-
-
-	/**
-	 * Sphinx does not like parenthesis in WHERE
-	 */
-	private $no_parenthesis_in_conditions = false;
-
-
-	/**
-	 * Returns fresh instance of Flupdo query builder.
-	 */
-	function __call($method, $args)
-	{
-		$class = __NAMESPACE__.'\\'.ucfirst($method).'Builder';
-		if (!class_exists($class)) {
-			throw new \BadMethodCallException('Undefined method "'.$method.'".');
-		}
-		$builder = new $class($this, $this->log_query, $this->log_explain, $this->no_parenthesis_in_conditions);
-		if (!empty($args)) {
-			$builder->__call($method, $args);
-		}
-		return $builder;
-	}
-
-
-	/**
-	 * Quote identifier for use in SQL query (i.e. table name, column name), preserve dot.
-	 *
-	 * This is a copy of FlupdoBuilder::quoteIdent().
-	 */
-	public function quoteIdent($ident)
-	{
-		if (is_array($ident)) {
-			return array_map(function($ident) { return '`' . str_replace(array('`', '.'), array('``', '`.`'), $ident) . '`'; }, $ident);
-		} else {
-			return '`' . str_replace(array('`', '.'), array('``', '`.`'), $ident) . '`';
-		}
-	}
-
-
-	/**
-	 * Returns object marking raw SQL statement.
-	 */
-	public function rawSql($sql)
-	{
-		return new FlupdoRawSql($sql);
-	}
-
+	use FlupdoTrait;
 
 	/**
 	 * Creates instance of this class using configuration specified in array.
@@ -160,8 +103,8 @@ class Flupdo extends \PDO implements IFlupdo
 			throw new \Exception('Not implemented.');
 		}
 
-		$n->log_explain = $log_explain;
-		$n->log_query   = $log_query;
+		$n->flupdo_log_explain = $log_explain;
+		$n->flupdo_log_query   = $log_query;
 
 		return $n;
 	}
