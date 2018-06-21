@@ -130,7 +130,9 @@ abstract class FlupdoBuilder
 			throw new \RuntimeException('Query is already compiled.');
 		}
 
-		@ list($action, $buffer_id, $label) = static::$methods[$method];
+		$method_cfg = static::$methods[$method];
+		list($action, $buffer_id) = $method_cfg;
+		$label = $method_cfg[2] ?? null;        // label is optional
 
 		if (count($args) == 1 && $args[0] === null) {
 			unset($this->buffers[$buffer_id]);
