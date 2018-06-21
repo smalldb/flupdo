@@ -27,4 +27,8 @@ class FlupdoDoctrineWrapper extends FlupdoWrapper
 		$this->pdo = $connection;
 	}
 
+	public function inTransaction(): bool
+	{
+		return method_exists($this->pdo, 'isTransactionActive') ? $this->pdo->isTransactionActive() : $this->pdo->inTransaction();
+	}
 }
